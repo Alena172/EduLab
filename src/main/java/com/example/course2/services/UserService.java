@@ -111,19 +111,8 @@ public class UserService {
      * @param newPassword the new password
      */
     public void changePassword(User user, String newPassword) {
-        user.setPassword(newPassword);
+        user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
-    }
-
-    /**
-     * Find a user by name.
-     *
-     * @param email the email of the user
-     * @return the user
-     */
-    public User findByName(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
     /**

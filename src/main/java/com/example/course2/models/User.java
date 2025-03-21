@@ -10,6 +10,9 @@ import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+/**
+ * Entity class representing a user.
+ */
 @Getter
 @Setter
 @Entity
@@ -27,7 +30,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(() -> "ROLE_" + role); // Конвертируем роль в авторитет
+        return List.of(() -> "ROLE_" + role); // Convert role to authority
     }
 
     @Column(name = "name", nullable = false)
@@ -63,8 +66,34 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<LessonProgress> lessonProgress;
 
+    /**
+     * Get the full name of the user.
+     *
+     * @return the full name
+     */
     public String getFullName() {
         return surname + " " + name;
+    }
+
+    // Other methods required by UserDetails interface
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }
 
