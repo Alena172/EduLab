@@ -6,6 +6,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
+/**
+ * Repository interface for managing blocks.
+ */
 public interface BlockRepository extends JpaRepository<Block, Long> {
     List<Block> findByLesson(Lesson lesson);
 }

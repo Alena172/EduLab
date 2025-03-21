@@ -9,6 +9,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Service class for managing enrollments.
+ */
 @Service
 public class EnrollmentService {
 
@@ -21,10 +24,24 @@ public class EnrollmentService {
     @Autowired
     private LessonProgressService lessonProgressService;
 
+    /**
+     * Find enrollment by student and course.
+     *
+     * @param student the student
+     * @param course the course
+     * @return the enrollment
+     */
     public Optional<Enrollment> findEnrollment(User student, Course course) {
         return enrollmentRepository.findByStudentAndCourse(student, course);
     }
 
+    /**
+     * Enroll a user in a course.
+     *
+     * @param student the student
+     * @param course the course
+     * @return the enrollment
+     */
     public Enrollment enrollUserInCourse(User student, Course course) {
         Enrollment enrollment = new Enrollment();
         enrollment.setStudent(student);
@@ -35,20 +52,28 @@ public class EnrollmentService {
         return enrollmentRepository.save(enrollment);
     }
 
+    /**
+     * Find enrollments by student.
+     *
+     * @param student the student
+     * @return the list of enrollments
+     */
     public List<Enrollment> findEnrollmentsByStudent(User student) {
         return enrollmentRepository.findAllByStudent(student);
     }
 
+    /**
+     * Calculate course completion percentage for a user.
+     *
+     * @param user the user
+     * @param course the course
+     * @return the completion percentage
+     */
     public double calculateCourseCompletion(User user, Course course) {
-        // Получаем все уроки курса
         List<Lesson> lessons = lessonService.findLessonsByCourse(course);
-
-        // Считаем количество завершённых уроков для данного пользователя
         long completedLessonsCount = lessons.stream()
                 .filter(lesson -> lessonProgressService.hasCompletedLesson(user, lesson))
                 .count();
-
-        // Вычисляем процент завершённых уроков
         double completionPercentage = 0;
         if (lessons.size() > 0) {
             completionPercentage = (double) completedLessonsCount / lessons.size() * 100;

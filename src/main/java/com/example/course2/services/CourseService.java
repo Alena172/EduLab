@@ -11,11 +11,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
+/**
+ * Service class for managing courses.
+ */
 @Service
 public class CourseService {
     private static final Logger logger = LoggerFactory.getLogger(AdminController.class);
@@ -26,16 +27,17 @@ public class CourseService {
     @Autowired
     private UserRepository userRepository;
 
-    // Добавление нового курса
+    /**
+     * Add a course.
+     *
+     * @param course the course to add
+     */
     public void addCourse(Course course) {
-        // Устанавливаем преподавателя, если он указан в курсе
         if (course.getInstructor() != null) {
             User instructor = userRepository.findById(course.getInstructor().getId())
-                    .orElseThrow(() -> new RuntimeException("Преподаватель не найден"));
-
-            // Проверяем, является ли преподаватель учителем
+                    .orElseThrow(() -> new RuntimeException("Instructor not found"));
             if (instructor.getRole() != Role.Teacher) {
-                throw new RuntimeException("Пользователь не является преподавателем");
+                throw new RuntimeException("User is not a teacher");
             }
             course.setInstructor(instructor);
         }
@@ -43,14 +45,15 @@ public class CourseService {
         courseRepository.save(course);
     }
 
-
-    // Сохранение или обновление курса
+    /**
+     * Save a course.
+     *
+     * @param course the course to save
+     */
     public void save(Course course) {
-        // Проверяем, существует ли курс с данным id
         Course existingCourse = courseRepository.findById(course.getId())
-                .orElseThrow(() -> new RuntimeException("Курс не найден"));
+                .orElseThrow(() -> new RuntimeException("Course not found"));
 
-        // Обновляем поля существующего курса
         existingCourse.setTitle(course.getTitle());
         existingCourse.setDescription(course.getDescription());
         existingCourse.setPrice(course.getPrice());
@@ -58,38 +61,46 @@ public class CourseService {
         existingCourse.setDuration(course.getDuration());
         existingCourse.setStatus(course.getStatus());
         existingCourse.setImage(course.getImage());
-
-        // Обновление инструктора, если изменился
         if (course.getInstructor() != null) {
             User instructor = userRepository.findById(course.getInstructor().getId())
-                    .orElseThrow(() -> new RuntimeException("Преподаватель не найден"));
+                    .orElseThrow(() -> new RuntimeException("Instructor not found"));
             if (instructor.getRole() != Role.Teacher) {
-                throw new RuntimeException("Пользователь не является преподавателем");
+                throw new RuntimeException("User is not a teacher");
             }
             existingCourse.setInstructor(instructor);
         } else {
-            existingCourse.setInstructor(null);  // Сбрасываем инструктора, если его нет в новом объекте
+            existingCourse.setInstructor(null);
         }
 
-        // Сохраняем обновленный курс
         courseRepository.save(existingCourse);
     }
 
+    /**
+     * Check if a course exists by its ID.
+     *
+     * @param id the ID of the course
+     * @return true if the course exists, false otherwise
+     */
     public boolean courseExists(Long id) {
         boolean exists = courseRepository.existsById(id);
-                logger.info("Проверка существования курса с ID: {}: {}", id, exists);
+        logger.info("Checking existence of course with ID: {}: {}", id, exists);
         return exists;
-        }
-//        return courseRepository.existsById(id);
-
-
-
-
-    public List<Course> getAllCourses() {
-        return courseRepository.findAll();  // Используем метод findAll() для получения всех курсов
     }
 
-    // Получение списка всех курсов
+    /**
+     * Get all courses.
+     *
+     * @return the list of courses
+     */
+    public List<Course> getAllCourses() {
+        return courseRepository.findAll();
+    }
+
+    /**
+     * Find all courses.
+     *
+     * @return the list of courses
+     */
     public List<Course> findAll() {
         Iterable<Course> allCourses = courseRepository.findAll();
         List<Course> courses = new ArrayList<>();
@@ -97,26 +108,43 @@ public class CourseService {
         return courses;
     }
 
-    // Поиск курса по ID
+    /**
+     * Find a course by its ID.
+     *
+     * @param id the ID of the course
+     * @return the course
+     */
     public Course findCourseById(Long id) {
         return courseRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Курс не найден"));
+                .orElseThrow(() -> new RuntimeException("Course not found"));
     }
 
-    // Удаление курса
+    /**
+     * Delete a course by its ID.
+     *
+     * @param id the ID of the course
+     */
     public void deleteCourse(Long id) {
         Course course = courseRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Курс не найден"));
-
-        // Удаляем курс
+                .orElseThrow(() -> new RuntimeException("Course not found"));
         courseRepository.delete(course);
     }
 
-    // Получение списка преподавателей для назначения на курс
+    /**
+     * Find teachers.
+     *
+     * @return the list of teachers
+     */
     public List<User> findTeachers() {
         return userRepository.findByRole(Role.Teacher);
     }
 
+    /**
+     * Find courses by instructor.
+     *
+     * @param instructor the instructor
+     * @return the list of courses
+     */
     public List<Course> findByInstructor(User instructor) {
         return courseRepository.findByInstructor(instructor);
     }

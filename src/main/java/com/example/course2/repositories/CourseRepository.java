@@ -10,6 +10,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * Repository interface for managing courses.
+ */
 @Repository
 public interface CourseRepository extends JpaRepository<Course, Long> {
 
@@ -17,7 +20,6 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
     @Modifying
     @Query("UPDATE Course c SET c.instructor = NULL WHERE c.instructor = :instructor")
     void updateInstructorToNull(User instructor);
-
 
     List<Course> findByInstructor(User instructor);
 }

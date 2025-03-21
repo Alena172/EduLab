@@ -11,8 +11,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
+/**
+ * Service class for managing lessons.
+ */
 @Service
 public class LessonService {
 
@@ -25,27 +27,54 @@ public class LessonService {
     @Autowired
     private BlockService blockService;
 
-    // Метод для поиска урока по ID с использованием Optional
+    /**
+     * Find a lesson by its ID.
+     *
+     * @param id the ID of the lesson
+     * @return the lesson
+     */
     public Lesson findById(Long id) {
         return lessonRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Lesson not found"));
     }
 
-    // Метод для поиска всех уроков, относящихся к определенному курсу
+    /**
+     * Find lessons by course.
+     *
+     * @param course the course
+     * @return the list of lessons
+     */
     public List<Lesson> findLessonsByCourse(Course course) {
         return lessonRepository.findByCourse(course);
     }
 
-    // Метод для сохранения урока
+    /**
+     * Save a lesson.
+     *
+     * @param lesson the lesson to save
+     * @return the saved lesson
+     */
     public Lesson saveLesson(Lesson lesson) {
         return lessonRepository.save(lesson);
     }
 
-    // Метод для удаления урока по ID
+    /**
+     * Delete a lesson by its ID.
+     *
+     * @param id the ID of the lesson
+     */
     public void deleteById(Long id) {
         lessonRepository.deleteById(id);
     }
 
+    /**
+     * Update blocks of a lesson.
+     *
+     * @param lesson the lesson
+     * @param blockTitle the list of block titles
+     * @param blockType the list of block types
+     * @param blockContent the list of block contents
+     */
     public void updateBlocks(Lesson lesson, List<String> blockTitle, List<String> blockType, List<String> blockContent) {
         List<Block> updatedBlocks = new ArrayList<>();
         for (int i = 0; i < blockTitle.size(); i++) {
@@ -56,17 +85,26 @@ public class LessonService {
             block.setLesson(lesson);
             updatedBlocks.add(block);
         }
-        blockService.deleteBlocksByLesson(lesson); // Удаляем старые блоки
-        blockService.saveAll(updatedBlocks); // Сохраняем новые
+        blockService.deleteBlocksByLesson(lesson);
+        blockService.saveAll(updatedBlocks);
     }
 
+    /**
+     * Delete a lesson.
+     *
+     * @param lesson the lesson to delete
+     */
     public void delete(Lesson lesson) {
         lessonRepository.delete(lesson);
     }
 
-    // Метод для сохранения урока
+    /**
+     * Save a lesson.
+     *
+     * @param lesson the lesson to save
+     * @return the saved lesson
+     */
     public Lesson save(Lesson lesson) {
         return lessonRepository.save(lesson);
     }
-
 }

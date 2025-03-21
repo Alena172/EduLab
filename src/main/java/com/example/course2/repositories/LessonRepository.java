@@ -6,6 +6,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
+/**
+ * Repository interface for managing lessons.
+ */
 public interface LessonRepository extends JpaRepository<Lesson, Long> {
     List<Lesson> findByCourse(Course course);
 }

@@ -11,6 +11,9 @@ import com.example.course2.repositories.UserRepository;
 
 import java.util.Collections;
 
+/**
+ * Implementation of UserDetailsService for loading user-specific data.
+ */
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
@@ -21,6 +24,13 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         this.userRepository = userRepository;
     }
 
+    /**
+     * Load a user by username (email).
+     *
+     * @param email the email of the user
+     * @return the user details
+     * @throws UsernameNotFoundException if the user is not found
+     */
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(email)

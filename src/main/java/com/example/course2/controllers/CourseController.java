@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @Controller
 public class CourseController {
 
-    private static final Logger logger = LoggerFactory.getLogger(CourseController.class); // Логер для данного класса
+    private static final Logger logger = LoggerFactory.getLogger(CourseController.class);
 
     @Autowired
     private CourseService courseService;

@@ -2,7 +2,6 @@ package com.example.course2.controllers;
 
 import com.example.course2.services.UserService;
 import com.example.course2.models.User;
-import lombok.extern.slf4j.Slf4j;  // Импортируем аннотацию Lombok
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
